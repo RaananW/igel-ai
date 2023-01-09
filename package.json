@@ -1,0 +1,14 @@
+{
+  "name": "image-generator-eabstraction-layer",
+  "version": "1.0.0",
+  "description": "Igel - An abstraction layer for image generation APIs. It's a simple prototype that will also include a babylon.js-oriented API.",
+  "author": "Raanan Weber",
+  "license": "Apache-2.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w igel-ai && npm run build -w igel-ai-babylon-ui",
+    "postinstall": "npm run build"
+  }
+}
