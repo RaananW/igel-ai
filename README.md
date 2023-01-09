@@ -14,11 +14,13 @@ To run the demo app:
 
 `npm run dev -w igel-ai-babylon-ui`
 
+You will need a Dall-E API key to be able to use the UI. No, you are not getting mine.
+
 ## Adding a new plugin
 
 In the `igel-ai` package you will find a plugins folder. Add your plugin there, implement the API, modify the interfaces if needed, and you are good to go.
 
-## whya re you misspelling Abstraction
+## why are you misspelling Abstraction
 
 Because otherwise it won't make sense. Igel is the german word for Hedgehog. And Igal is a hebrew name. In this case I preferred the hedgehog.
 
