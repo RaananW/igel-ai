@@ -16,7 +16,8 @@ export interface IImageGeneratorPlugin {
  * When adding a new plugin make sure you add them here.
  */
 export enum SupportedEngines {
-    OPENNI = "OpenNI"
+    OPENNI = "OpenNI",
+    STABLEDIFFUSION = "StableDiffusion"
 }
 
 /**
@@ -30,6 +31,7 @@ export interface IImageGeneratorTextToImageOptions {
     responseType?: 'base64' | 'buffer';
     resultsLength?: number;
     requestIdentifier?: string;
+    negativePrompt?: string;
 }
 
 /**
