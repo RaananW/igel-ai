@@ -24,6 +24,10 @@ export class ImageGenerator {
         plugin.injectMethods(this._injectedMethods);
 
     };
+
+    public removePlugin(engine: SupportedEngines) {
+        delete this._plugins[engine];
+    }
     async textToImage(prompt: string, options: IImageGeneratorTextToImageOptions, engine?: SupportedEngines): Promise<IImageGeneratorResponse> {
         return this.getPlugin(engine).textToImage(prompt, options);
     }

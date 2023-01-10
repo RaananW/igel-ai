@@ -16,7 +16,7 @@ export interface IImageGeneratorPlugin {
  * When adding a new plugin make sure you add them here.
  */
 export enum SupportedEngines {
-    OPENNI = "openni"
+    OPENNI = "OpenNI"
 }
 
 /**
