@@ -115,7 +115,7 @@ export function Engines() {
             </DialogSurface>
           </Dialog>
           {value.registeredEngines.map((engine) => (
-            <div className={classes.engineContainer}>
+            <div className={classes.engineContainer} key={engine}>
               <Switch
                 checked={value.enabledEngines.includes(engine) ?? false}
                 label={engine}
