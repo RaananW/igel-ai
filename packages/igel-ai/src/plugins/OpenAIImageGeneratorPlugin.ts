@@ -20,6 +20,11 @@ export class OpenAIImageGeneratorPlugin implements IImageGeneratorPlugin {
         delete configuration.baseOptions.headers["User-Agent"];
         this._openai = new OpenAIApi(configuration);
     }
+    public serialize(): { [key: string]: any; } {
+        return {
+            apiKey: this._apiKey
+        }
+    }
     public injectMethods(methods: IInjectedMethods) {
         this._injectedMethods = methods;
     }

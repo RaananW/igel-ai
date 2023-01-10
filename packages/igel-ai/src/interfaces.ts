@@ -3,11 +3,12 @@
  * If the API is missing one of the methods, it should throw.
  */
 export interface IImageGeneratorPlugin {
-    readonly name: string;
+    readonly name: SupportedEngines;
     injectMethods(methods: IInjectedMethods): void;
     textToImage(prompt: string, options?: IImageGeneratorTextToImageOptions): Promise<IImageGeneratorResponse>;
     inpainting(prompt: string, options: IImageGeneratorInpaintingOptions): Promise<IImageGeneratorResponse>;
     imageToImage(prompt?: string, options?: IImageGeneratorImageToImageOptions): Promise<IImageGeneratorResponse>;
+    serialize(): { [key: string]: any };
 }
 
 /**

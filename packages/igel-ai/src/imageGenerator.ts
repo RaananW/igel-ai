@@ -19,8 +19,8 @@ export class ImageGenerator {
     constructor(private _injectedMethods: IInjectedMethods) {
     }
 
-    public addPlugin(engine: SupportedEngines, plugin: IImageGeneratorPlugin) {
-        this._plugins[engine] = plugin;
+    public addPlugin(plugin: IImageGeneratorPlugin) {
+        this._plugins[plugin.name] = plugin;
         plugin.injectMethods(this._injectedMethods);
 
     };
