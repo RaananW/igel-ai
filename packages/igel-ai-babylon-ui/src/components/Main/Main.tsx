@@ -40,7 +40,6 @@ export function Main() {
   };
 
   const setResultUrlFromReturnValue = (res: IImageGeneratorResponse) => {
-    console.log(res);
     const firstImage = res.images[0];
     if (firstImage.startsWith("http")) {
       setResultUrl(res.images[0]);
@@ -110,7 +109,6 @@ export function Main() {
             <Button
               onClick={async () => {
                 const newUrl = await prepareImageForSeamlessTexture(resultUrl);
-                console.log(newUrl);
                 setResultUrl(newUrl);
               }}
             >
@@ -119,7 +117,6 @@ export function Main() {
             <Button
               onClick={async () => {
                 const newUrl = await generateCrossMask(resultUrl);
-                console.log(newUrl);
                 setMaskUrl(newUrl);
               }}
             >
