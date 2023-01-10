@@ -9,17 +9,16 @@ import {
   IInjectedMethods,
   SupportedEngines,
 } from "../interfaces";
-import { StableDiffusionResponse, StableDiffusionTextToImageRequestBody } from "./StableDiffussionApiInterfaces";
+import { IStableDiffusionImageRequest, IStableDiffusionRequestBody, IStableDiffusionResponse } from "./StableDiffussionApiInterfaces";
 
 export class StableDiffusionImageGeneratorPlugin implements IImageGeneratorPlugin
 {
-    private _injectedMethods?: IInjectedMethods;
     public readonly name = SupportedEngines.STABLEDIFFUSION;
 
     public constructor(private readonly _apiKey: string) {}
 
     public injectMethods(methods: IInjectedMethods): void {
-        this._injectedMethods = methods;
+        // Not used for Stable Diffusion API
     }
 
     public async textToImage(
@@ -27,30 +26,77 @@ export class StableDiffusionImageGeneratorPlugin implements IImageGeneratorPlugi
         options: IImageGeneratorTextToImageOptions
     ): Promise<IImageGeneratorResponse> {
         const createImageRequest = this.generateTextToImageRequest(prompt, options);
+
         // will throw an error if the request is invalid
         const response = await axios.request(createImageRequest);
         return this.responseToReturnFormat(response);
     }
 
-    inpainting(
+    public async imageToImage(
+        prompt: string,
+        options: IImageGeneratorImageToImageOptions
+    ): Promise<IImageGeneratorResponse> {
+        if (!options.image || !(StableDiffusionImageGeneratorPlugin.isString(options.image))) {
+            throw new Error("Image URL is required for image to image generation");
+        }
+
+        const createImageRequest = this.generateImageToImageRequest(prompt, options);
+
+        // will throw an error if the request is invalid
+        const response = await axios.request(createImageRequest);
+        return this.responseToReturnFormat(response);
+    }
+
+    public async inpainting(
         prompt: string,
         options: IImageGeneratorInpaintingOptions
     ): Promise<IImageGeneratorResponse> {
-        throw new Error("Method not implemented.");
+        if (!options.mask || !(StableDiffusionImageGeneratorPlugin.isString(options.mask))) {
+            throw new Error("Image URL is required for image to image generation");
+        }
+
+        const createImageRequest = this.generateInpaintRequest(prompt, options);
+    
+        // will throw an error if the request is invalid
+        const response = await axios.request(createImageRequest);
+        return this.responseToReturnFormat(response);
     }
 
-    imageToImage(
-        prompt?: string | undefined,
-        options?: IImageGeneratorImageToImageOptions | undefined
-    ): Promise<IImageGeneratorResponse> {
-        throw new Error("Method not implemented.");
+    public serialize(): { [key: string]: any } {
+        return {
+            apiKey: this._apiKey,
+        };
     }
 
-    serialize(): { [key: string]: any } {
-        throw new Error("Method not implemented.");
+    private generateTextToImageRequest(prompt: string, options: IImageGeneratorTextToImageOptions): AxiosRequestConfig<IStableDiffusionRequestBody> {
+        return this.generateImageRequest({
+            prompt,
+            url: 'https://stablediffusionapi.com/api/v3/text2img',
+            ...options
+        });
     }
 
-    private generateTextToImageRequest(prompt: string, options: IImageGeneratorTextToImageOptions): AxiosRequestConfig<StableDiffusionTextToImageRequestBody> {
+    private generateImageToImageRequest(prompt: string, options: IImageGeneratorImageToImageOptions): AxiosRequestConfig<IStableDiffusionRequestBody> {
+        const {image, ...optionsWithoutImage} = options;
+        return this.generateImageRequest({
+            prompt,
+            url: 'https://stablediffusionapi.com/api/v3/img2img',
+            image: (image as any as string),
+            ...optionsWithoutImage
+        });
+    }
+
+    private generateInpaintRequest(prompt: string, options: IImageGeneratorInpaintingOptions): AxiosRequestConfig<IStableDiffusionRequestBody> {
+        const {image, mask, ...optionsWithoutMask} = options;
+        return this.generateImageRequest({
+            prompt,
+            url: 'https://stablediffusionapi.com/api/v3/inpaint',
+            mask: (mask as any as string),
+            ...optionsWithoutMask
+        });
+    }
+
+    private generateImageRequest(options: IStableDiffusionImageRequest): AxiosRequestConfig<IStableDiffusionRequestBody> {
         if (options.width || options.height) {
             if (options.width && options.height && options.width !== options.height) {
                 console.log("Width and height should be equal. Using width value.");
@@ -68,11 +114,13 @@ export class StableDiffusionImageGeneratorPlugin implements IImageGeneratorPlugi
 
         return {
             method: 'POST',
-            url: 'https://stablediffusionapi.com/api/v3/text2img',
+            url: options.url,
             data: {
                 key: this._apiKey,
-                prompt: prompt,
+                prompt: options.prompt,
                 negative_prompt: options.negativePrompt ?? '',
+                init_image: (options.image as string) ?? null,
+                mask_image: (options.mask as string) ?? null,
                 samples: options.resultsLength ?? 1,
                 width : options.width ?? 1024,
                 height : options.height ?? 1024,
@@ -81,7 +129,7 @@ export class StableDiffusionImageGeneratorPlugin implements IImageGeneratorPlugi
                 guidance_scale: 7.5,
                 seed: null, // random seed
                 webhook: null,
-                track_id: null
+                track_id: options.requestIdentifier ?? null
             },
             headers: {
                 'Content-Type': 'application/json',
@@ -89,10 +137,14 @@ export class StableDiffusionImageGeneratorPlugin implements IImageGeneratorPlugi
         }
     }
 
-    private responseToReturnFormat(response: AxiosResponse<StableDiffusionResponse, any>): IImageGeneratorResponse {
+    private responseToReturnFormat(response: AxiosResponse<IStableDiffusionResponse, any>): IImageGeneratorResponse {
         return {
             images: response.data.output,
             metadata: response.data.meta
         };
+    }
+
+    private static isString(obj: any): obj is string {
+        return obj.charAt !== undefined 
     }
 }

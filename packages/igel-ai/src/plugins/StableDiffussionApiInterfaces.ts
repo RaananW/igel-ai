@@ -1,7 +1,21 @@
-export interface StableDiffusionTextToImageRequestBody {
+export interface IStableDiffusionImageRequest {
+    prompt: string;
+    url: string;
+    width?: number;
+    height?: number;
+    resultsLength?: number;
+    requestIdentifier?: string;
+    negativePrompt?: string;
+    image?: string;
+    mask?: string;
+}
+
+export interface IStableDiffusionRequestBody {
     key: string;
     prompt: string;
     negative_prompt: string;
+    init_image: string | null;
+    mask_image: string | null;
     samples: number;
     width: number;
     height: number;
@@ -13,15 +27,15 @@ export interface StableDiffusionTextToImageRequestBody {
     track_id: string | null;
 }
 
-export interface StableDiffusionResponse {
+export interface IStableDiffusionResponse {
     status: string;
     generationTime: number;
     id: number;
     output: string[],
-    meta:  StableDiffusionResponseMetadata
+    meta:  IStableDiffusionResponseMetadata
 }
 
-export interface StableDiffusionResponseMetadata {
+export interface IStableDiffusionResponseMetadata {
     H: number;
     W: number;
     enabled_attention_slicing: boolean;
