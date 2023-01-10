@@ -3,6 +3,7 @@
  * If the API is missing one of the methods, it should throw.
  */
 export interface IImageGeneratorPlugin {
+    readonly name: string;
     injectMethods(methods: IInjectedMethods): void;
     textToImage(prompt: string, options?: IImageGeneratorTextToImageOptions): Promise<IImageGeneratorResponse>;
     inpainting(prompt: string, options: IImageGeneratorInpaintingOptions): Promise<IImageGeneratorResponse>;
@@ -10,9 +11,12 @@ export interface IImageGeneratorPlugin {
 }
 
 /**
- * A fixed list of APIs supported. If there are any others feel free to add them.
+ * A fixed list of APIs supported. 
+ * When adding a new plugin make sure you add them here.
  */
-export type SupportedEngines = "openai" | "deepai" | "stablediffusionapi";
+export enum SupportedEngines {
+    OPENNI = "openni"
+}
 
 /**
  * The required data to generate an image from text.

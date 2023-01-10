@@ -1,11 +1,12 @@
 import { CreateImageRequest, CreateImageRequestSizeEnum, ImagesResponse, OpenAIApi } from "openai";
 import { Configuration } from "openai";
 import { AxiosResponse } from "axios";
-import { IImageGeneratorImageToImageOptions, IImageGeneratorInpaintingOptions, IImageGeneratorPlugin, IImageGeneratorResponse, IImageGeneratorTextToImageOptions, IInjectedMethods } from "../interfaces";
+import { IImageGeneratorImageToImageOptions, IImageGeneratorInpaintingOptions, IImageGeneratorPlugin, IImageGeneratorResponse, IImageGeneratorTextToImageOptions, IInjectedMethods, SupportedEngines } from "../interfaces";
 
 export class OpenAIImageGeneratorPlugin implements IImageGeneratorPlugin {
     private _openai: OpenAIApi;
     private _injectedMethods?: IInjectedMethods;
+    public readonly name = SupportedEngines.OPENNI;
     constructor(private _apiKey: string) {
         const configuration = new Configuration({
             apiKey: this._apiKey,
