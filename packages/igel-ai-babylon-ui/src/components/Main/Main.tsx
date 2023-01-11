@@ -1,7 +1,12 @@
 import { Button, Input, Label } from "@fluentui/react-components";
 import { IImageGeneratorResponse } from "igel-ai";
-import { useState } from "react";
-import { generateCrossMask, prepareImageForSeamlessTexture } from "../../Helper";
+import { useCallback, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import {
+  cropToSquare,
+  generateCrossMask,
+  prepareImageForSeamlessTexture,
+} from "../../Helper";
 import {
   imageGenerator,
   ImageGeneratorContext,
@@ -14,6 +19,43 @@ export function Main() {
   const [imageUrl, setImageUrl] = useState<string>("");
   const [maskUrl, setMaskUrl] = useState<string>("");
   const [resultUrl, setResultUrl] = useState<string>("");
+
+  const onDropImageUrl = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length === 0) return;
+    // check if it is an image
+    if (acceptedFiles[0].type.indexOf("image") !== 0) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result;
+      if (typeof dataUrl === "string") {
+        setImageUrl(dataUrl);
+      }
+    };
+    reader.readAsDataURL(acceptedFiles[0]);
+  }, []);
+  const {
+    getRootProps: getRootPropsImageUrl,
+    getInputProps: getInputPropsImageUrl,
+    isDragActive: isDragActiveImageUrl,
+  } = useDropzone({ onDrop: onDropImageUrl });
+  const onDropMaskUrl = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length === 0) return;
+    // check if it is an image
+    if (acceptedFiles[0].type.indexOf("image") !== 0) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result;
+      if (typeof dataUrl === "string") {
+        setMaskUrl(dataUrl);
+      }
+    };
+    reader.readAsDataURL(acceptedFiles[0]);
+  }, []);
+  const {
+    getRootProps: getRootPropsMaskUrl,
+    getInputProps: getInputPropsMaskUrl,
+    isDragActive: isDragActiveMaskUrl,
+  } = useDropzone({ onDrop: onDropMaskUrl });
 
   const text2image = () => {
     imageGenerator
@@ -29,6 +71,7 @@ export function Main() {
       .imageToImage("", {
         negativePrompt: negativePrompt,
         image: imageUrl,
+        responseType: "base64",
       })
       .then(setResultUrlFromReturnValue);
   };
@@ -39,6 +82,7 @@ export function Main() {
         negativePrompt: negativePrompt,
         image: imageUrl,
         mask: maskUrl || imageUrl,
+        responseType: "base64",
       })
       .then(setResultUrlFromReturnValue);
   };
@@ -86,7 +130,7 @@ export function Main() {
           <Label htmlFor="imageUrl">Image URL</Label>
           <Input
             id="imageUrl"
-            value={imageUrl}
+            // value={imageUrl}
             onChange={(e) => {
               setImageUrl(e.target.value);
             }}
@@ -95,7 +139,7 @@ export function Main() {
           <Label htmlFor="maskUrl">Mask URL (Optional)</Label>
           <Input
             id="maskUrl"
-            value={maskUrl}
+            // value={maskUrl}
             onChange={(e) => {
               setMaskUrl(e.target.value);
             }}
@@ -112,30 +156,56 @@ export function Main() {
               Inpainting
             </Button>
           </div>
-          <img src={resultUrl} alt={prompt}></img>
+          <div className={classes.buttonsContainer}>
+            <div
+              className={`${classes.imageContainer} ${
+                isDragActiveImageUrl || isDragActiveMaskUrl
+                  ? classes.dropZone
+                  : ""
+              }`}
+              {...getRootPropsImageUrl()}
+            >
+              Image URL
+              <input {...getInputPropsImageUrl()} />
+              <img src={imageUrl} alt={prompt}></img>
+            </div>
+            <div
+              className={`${classes.imageContainer} ${
+                isDragActiveImageUrl || isDragActiveMaskUrl
+                  ? classes.dropZone
+                  : ""
+              }`}
+              {...getRootPropsMaskUrl()}
+            >
+              Mask URL
+              <input {...getInputPropsMaskUrl()} />
+              <img src={maskUrl} alt=""></img>
+            </div>
+          </div>
+          <div
+            className={`${classes.imageContainer} ${classes.resultContainer}`}
+          >
+            Result
+            <img src={resultUrl} alt=""></img>
+          </div>
           <div className={classes.buttonsContainer}>
             <Button
               onClick={() => {
                 setImageUrl(resultUrl);
               }}
             >
-              Use as variationURL
+              Use as image URL
             </Button>
             <Button
               onClick={async () => {
-                const newUrl = await prepareImageForSeamlessTexture(resultUrl);
-                setResultUrl(newUrl);
+                const cropped = await cropToSquare(imageUrl);
+                const cross = await generateCrossMask(cropped);
+                const newUrl = await prepareImageForSeamlessTexture(cropped);
+                setMaskUrl(cross);
+                setImageUrl(newUrl);
               }}
             >
-              Prepare for seamless
-            </Button>
-            <Button
-              onClick={async () => {
-                const newUrl = await generateCrossMask(resultUrl);
-                setMaskUrl(newUrl);
-              }}
-            >
-              Generate cross mask
+              Prepare seamless texture
             </Button>
           </div>
         </div>
