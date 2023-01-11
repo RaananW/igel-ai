@@ -19,7 +19,7 @@ export interface IStableDiffusionRequestBody {
     samples: number;
     width: number;
     height: number;
-    prompt_strength: string;
+    prompt_strength: number;
     num_inference_steps: number;
     guidance_scale: number;
     seed: string | null;

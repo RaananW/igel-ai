@@ -123,7 +123,7 @@ export class StableDiffusionImageGeneratorPlugin implements IImageGeneratorPlugi
                 samples: options.resultsLength ?? 1,
                 width : options.width ?? 1024,
                 height : options.height ?? 1024,
-                prompt_strength : '',
+                prompt_strength : 1,
                 num_inference_steps : 20,
                 guidance_scale: 7.5,
                 seed: null, // random seed
@@ -131,7 +131,7 @@ export class StableDiffusionImageGeneratorPlugin implements IImageGeneratorPlugi
                 track_id: options.requestIdentifier ?? null
             },
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
         }
     }

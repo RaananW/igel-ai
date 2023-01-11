@@ -10,6 +10,7 @@ import classes from "./Main.module.css";
 
 export function Main() {
   const [prompt, setPrompt] = useState<string>("");
+  const [negativePrompt, setNegativePrompt] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string>("");
   const [maskUrl, setMaskUrl] = useState<string>("");
   const [resultUrl, setResultUrl] = useState<string>("");
@@ -17,6 +18,7 @@ export function Main() {
   const text2image = () => {
     imageGenerator
       .textToImage(prompt, {
+        negativePrompt: negativePrompt,
         responseType: "base64",
       })
       .then(setResultUrlFromReturnValue);
@@ -25,6 +27,7 @@ export function Main() {
   const imageVariation = () => {
     imageGenerator
       .imageToImage("", {
+        negativePrompt: negativePrompt,
         image: imageUrl,
       })
       .then(setResultUrlFromReturnValue);
@@ -33,6 +36,7 @@ export function Main() {
   const inpainting = () => {
     imageGenerator
       .inpainting(prompt, {
+        negativePrompt: negativePrompt,
         image: imageUrl,
         mask: maskUrl || imageUrl,
       })
@@ -65,6 +69,17 @@ export function Main() {
             value={prompt}
             onChange={(e) => {
               setPrompt(e.target.value);
+            }}
+            disabled={!value.enabledEngines.length}
+          />
+          <Label htmlFor="negativePrompt" disabled={!value.enabledEngines.length}>
+            Negative Prompt
+          </Label>
+          <Input
+            id="negativePrompt"
+            value={negativePrompt}
+            onChange={(e) => {
+              setNegativePrompt(e.target.value);
             }}
             disabled={!value.enabledEngines.length}
           />
