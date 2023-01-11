@@ -14,7 +14,7 @@ import {
 } from "@fluentui/react-components";
 import { Delete24Regular } from "@fluentui/react-icons";
 import { Select } from "@fluentui/react-components/unstable";
-import { OpenAIImageGeneratorPlugin, SupportedEngines } from "igel-ai";
+import { OpenAIImageGeneratorPlugin, StableDiffusionImageGeneratorPlugin, SupportedEngines, IImageGeneratorPlugin } from "igel-ai";
 import { useState } from "react";
 import {
   imageGenerator,
@@ -46,11 +46,23 @@ export function Engines() {
                 onSubmit={(ev: React.FormEvent) => {
                   ev.preventDefault();
                   if (
-                    value.registeredEngines.includes(SupportedEngines.OPENNI) ||
+                    value.registeredEngines.includes(engine) ||
                     !apiKey
                   )
                     return;
-                  const newEngine = new OpenAIImageGeneratorPlugin(apiKey);
+                  
+                  let newEngine: IImageGeneratorPlugin;
+                  switch (engine) {
+                    case SupportedEngines.OPENNI:
+                      newEngine = new OpenAIImageGeneratorPlugin(apiKey);
+                      break;
+                    case SupportedEngines.STABLEDIFFUSION:
+                      newEngine = new StableDiffusionImageGeneratorPlugin(apiKey);
+                      break;
+                    default:
+                      newEngine = new OpenAIImageGeneratorPlugin(apiKey);
+                  }
+
                   imageGenerator.addPlugin(newEngine);
                   value.updateRegisteredEngines([
                     ...value.registeredEngines,
