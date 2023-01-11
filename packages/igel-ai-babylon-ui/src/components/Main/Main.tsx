@@ -37,7 +37,7 @@ export function Main() {
     const [loading, setLoading] = useState<boolean>(false);
     const [seamlessProcess, setSeamlessProcess] = useState<boolean>(false);
     const [engine, setEngine] = useState<SupportedEngines>();
-    const [maskSize /*, setMaskSize*/] = useState<number>(0.08);
+    const [maskSize /*, setMaskSize*/] = useState<number>(0.1);
 
     const {
         generatedImages,
@@ -142,6 +142,8 @@ export function Main() {
 
     const generateSeamless = async () => {
         setLoading(true);
+        setImageUrl("");
+        setMaskUrl("");
         // run text2image first
         const image = await text2image();
         // then run the seamless process
