@@ -23,6 +23,7 @@ export interface IImageProps {
     extraMenuItems?: { label: string; onClick: () => void }[];
     keepInResults?: boolean;
     forceMenu?: boolean;
+    tooltip?: string;
 }
 export function SingleImage({
     image,
@@ -33,6 +34,7 @@ export function SingleImage({
     extraMenuItems,
     keepInResults,
     forceMenu,
+    tooltip,
 }: IImageProps) {
     const { generatedImages, setSelectedImage, updateGeneratedImages } =
         useContext(ImageGeneratorContext);
@@ -47,7 +49,10 @@ export function SingleImage({
                 <div className={classes.menu}>
                     <Menu>
                         <MenuTrigger disableButtonEnhancement>
-                            <Tooltip content="Image menu" relationship="label">
+                            <Tooltip
+                                content={tooltip || "Image menu"}
+                                relationship="label"
+                            >
                                 <MenuButton
                                     size="large"
                                     appearance="primary"

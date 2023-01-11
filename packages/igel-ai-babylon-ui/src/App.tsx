@@ -6,6 +6,7 @@ import {
     ImageGeneratorContext,
     registeredEngines,
 } from "./ImageGeneratorContext";
+import "./App.css";
 
 function App() {
     const [enabledEngines, updateEnabledEngines] = useState<SupportedEngines[]>(

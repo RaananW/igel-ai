@@ -8,6 +8,7 @@ import {
     generateCrossMask,
     prepareImageForSeamlessTexture,
     processMaskImage,
+    reverseMaskImage,
 } from "../../Helper";
 import {
     imageGenerator,
@@ -282,6 +283,7 @@ export function Main() {
                                 }}
                                 loading={seamlessProcess}
                                 forceMenu={true}
+                                tooltip="Image input menu"
                                 extraMenuItems={[
                                     {
                                         label: "Load from disk",
@@ -329,6 +331,7 @@ export function Main() {
                                 onImageRemoved={() => {
                                     setMaskUrl("");
                                 }}
+                                tooltip="Mask image menu"
                                 loading={seamlessProcess}
                                 forceMenu={true}
                                 extraMenuItems={[
@@ -336,6 +339,15 @@ export function Main() {
                                         label: "Load from disk",
                                         onClick: openMaskUrl,
                                     },
+                                    {
+                                        label: "Reverse mask",
+                                        onClick: () => {
+                                            if (!maskUrl) return;
+                                            reverseMaskImage(maskUrl)
+                                                .then(setMaskUrl)
+                                                .catch(onError);
+                                        }
+                                    }
                                     // {
                                     //     label: "Increase mask size",
                                     //     onClick: () => {
@@ -357,6 +369,7 @@ export function Main() {
                     >
                         <Label size="large">Result</Label>
                         <SingleImage
+                        tooltip="Result menu"
                             image={resultUrl}
                             loading={loading}
                             keepInResults={true}

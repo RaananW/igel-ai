@@ -1,6 +1,14 @@
-/* #root {
-  max-width: 1280px;
+#root {
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
-} */
+  height: 100%;
+}
+
+#root > div {
+  height: 100%;
+}
+
+.App {
+  height: 100%;
+}

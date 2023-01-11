@@ -64,7 +64,6 @@ export const resizeImage = async (imageUrl: string, maxDimension = 1200) => {
 };
 
 export const processMaskImage = async (imageUrl: string) => {
-    imageUrl = await resizeImage(imageUrl);
     const canvas = await imageUrlToCanvas(imageUrl);
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Could not get 2d context");
@@ -86,6 +85,30 @@ export const processMaskImage = async (imageUrl: string) => {
     ctx.putImageData(imageData, 0, 0);
     return canvas.toDataURL();
 }
+
+export const reverseMaskImage = async (imageUrl: string) => {
+    const canvas = await imageUrlToCanvas(imageUrl);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Could not get 2d context");
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3]) {
+            data[i] = 0;
+            data[i + 1] = 0;
+            data[i + 2] = 0;
+            data[i + 3] = 0;
+        } else {
+            data[i] = 255;
+            data[i + 1] = 0;
+            data[i + 2] = 0;
+            data[i + 3] = 255;
+        }
+    }
+    ctx.putImageData(imageData, 0, 0);
+    return canvas.toDataURL();
+}
+
 
 export const cropToSquare = async (imageUrl: string) => {
     imageUrl = await resizeImage(imageUrl);
