@@ -8,20 +8,26 @@ import {
 } from "./ImageGeneratorContext";
 
 function App() {
-    const [enabledPlugins, setEnabledPlugins] = useState<SupportedEngines[]>(
-        []
+    const [enabledEngines, updateEnabledEngines] = useState<SupportedEngines[]>(
+        registeredEngines
     );
     const [registeredPlugins, setRegisteredPlugins] =
         useState<SupportedEngines[]>(registeredEngines);
+    const [generatedImages, updateGeneratedImages] = useState<string[]>([]);
+    const [selectedImage, setSelectedImage] = useState<string>("");
 
     return (
         <ImageGeneratorContext.Provider
             value={{
                 registeredEngines: registeredPlugins,
                 imageGenerator,
-                enabledEngines: enabledPlugins,
-                updateEnabledEngines: setEnabledPlugins,
+                enabledEngines,
+                updateEnabledEngines,
                 updateRegisteredEngines: setRegisteredPlugins,
+                generatedImages,
+                updateGeneratedImages,
+                selectedImage,
+                setSelectedImage,
             }}
         >
             <div className="App">

@@ -1,5 +1,6 @@
 import { Engines } from "./engines/Engines";
 import classes from "./Grid.module.css";
+import { ImageList } from "./ImageList";
 import { Main } from "./Main/Main";
 
 export function Grid() {
@@ -11,7 +12,7 @@ export function Grid() {
             <div className={classes.gridItem}>
                 <Main></Main>
             </div>
-            <div className={classes.gridItem}>3</div>
+            <div className={classes.gridItem}><ImageList></ImageList></div>
         </div>
     );
 }

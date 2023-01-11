@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction } from "react";
+import { createContext, Dispatch, SetStateAction, useState } from "react";
 import { ImageGenerator, Parse } from "igel-ai";
 import { SupportedEngines } from "igel-ai";
 import { loadFile, saveFile, imageToFileObject } from "igel-ai/dist/web";
@@ -35,6 +35,10 @@ export const ImageGeneratorContext = createContext<{
     updateRegisteredEngines: Dispatch<SetStateAction<SupportedEngines[]>>;
     enabledEngines: SupportedEngines[];
     updateEnabledEngines: Dispatch<SetStateAction<SupportedEngines[]>>;
+    generatedImages: string[];
+    updateGeneratedImages: Dispatch<SetStateAction<string[]>>;
+    selectedImage: string;
+    setSelectedImage: Dispatch<SetStateAction<string>>;
 }>({
     imageGenerator,
     registeredEngines,
@@ -45,4 +49,12 @@ export const ImageGeneratorContext = createContext<{
     updateEnabledEngines: () => {
         /* no-op */
     },
+    generatedImages: [] as string[],
+    updateGeneratedImages: () => {
+        /* no-op */
+    },
+    selectedImage: "",
+    setSelectedImage: () => {
+        /* no-op */
+    }
 });
