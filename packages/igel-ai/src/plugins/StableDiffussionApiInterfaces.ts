@@ -31,8 +31,8 @@ export interface IStableDiffusionResponse {
     status: string;
     generationTime: number;
     id: number;
-    output: string[],
-    meta:  IStableDiffusionResponseMetadata
+    output: string[];
+    meta: IStableDiffusionResponseMetadata;
 }
 
 export interface IStableDiffusionResponseMetadata {
@@ -42,7 +42,7 @@ export interface IStableDiffusionResponseMetadata {
     file_prefix: string;
     guidance_scale: number;
     model: string;
-    n_samples: number,
+    n_samples: number;
     negative_prompt: string;
     outdir: string;
     prompt: string;

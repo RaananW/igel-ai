@@ -1,24 +1,32 @@
 import { createContext, Dispatch, SetStateAction } from "react";
-import { ImageGenerator, Parse, } from "igel-ai";
+import { ImageGenerator, Parse } from "igel-ai";
 import { SupportedEngines } from "igel-ai";
 import { loadFile, saveFile, imageToFileObject } from "igel-ai/dist/web";
 
 export const imageGenerator = new ImageGenerator({
     loadFile,
     saveFile,
-    imageToFileObject
+    imageToFileObject,
 });
 
-export const registeredEngines: SupportedEngines[] = localStorage.getItem("engines") ? JSON.parse(localStorage.getItem("engines")!) : [];
+const fromLocalStorage = localStorage.getItem("engines");
+export const registeredEngines: SupportedEngines[] = fromLocalStorage
+    ? (JSON.parse(fromLocalStorage) as SupportedEngines[])
+    : [];
 
 registeredEngines.forEach((engine) => {
     const data = localStorage.getItem(engine as string);
     if (!data) {
         return;
     }
-    Parse(engine, JSON.parse(data) as { [key: string]: any }).then((plugin) => {
-        imageGenerator.addPlugin(plugin);
-    });
+    Parse(engine, JSON.parse(data) as { [key: string]: unknown }).then(
+        (plugin) => {
+            imageGenerator.addPlugin(plugin);
+        },
+        (err) => {
+            console.error(err);
+        }
+    );
 });
 
 export const ImageGeneratorContext = createContext<{
@@ -30,7 +38,11 @@ export const ImageGeneratorContext = createContext<{
 }>({
     imageGenerator,
     registeredEngines,
-    updateRegisteredEngines: () => { },
+    updateRegisteredEngines: () => {
+        /* no-op */
+    },
     enabledEngines: [] as SupportedEngines[],
-    updateEnabledEngines: () => { },
+    updateEnabledEngines: () => {
+        /* no-op */
+    },
 });

@@ -1,14 +1,23 @@
 {
-  "name": "image-generator-eabstraction-layer",
-  "version": "1.0.0",
-  "description": "Igel - An abstraction layer for image generation APIs. It's a simple prototype that will also include a babylon.js-oriented API.",
-  "author": "Raanan Weber",
-  "license": "Apache-2.0",
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "build": "npm run build -w igel-ai && npm run build -w igel-ai-babylon-ui",
-    "postinstall": "npm run build"
-  }
+    "name": "image-generator-eabstraction-layer",
+    "version": "1.0.0",
+    "description": "Igel - An abstraction layer for image generation APIs. It's a simple prototype that will also include a babylon.js-oriented API.",
+    "author": "Raanan Weber",
+    "license": "Apache-2.0",
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "npm run build -w igel-ai && npm run build -w igel-ai-babylon-ui",
+        "postinstall": "npm run build",
+        "lint": "eslint --ext .ts,.tsx .",
+        "lint:fix": "eslint --ext .ts,.tsx . --fix",
+        "format": "prettier --write ."
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.48.1",
+        "@typescript-eslint/parser": "^5.48.1",
+        "eslint": "^8.31.0",
+        "prettier": "^2.8.2"
+    }
 }

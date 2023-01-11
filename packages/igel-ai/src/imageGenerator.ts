@@ -1,4 +1,12 @@
-import { IImageGeneratorImageToImageOptions, IImageGeneratorInpaintingOptions, IImageGeneratorPlugin, IImageGeneratorResponse, IImageGeneratorTextToImageOptions, IInjectedMethods, SupportedEngines } from "./interfaces";
+import {
+    IImageGeneratorImageToImageOptions,
+    IImageGeneratorInpaintingOptions,
+    IImageGeneratorPlugin,
+    IImageGeneratorResponse,
+    IImageGeneratorTextToImageOptions,
+    IInjectedMethods,
+    SupportedEngines,
+} from "./interfaces";
 // make node work in the browser
 declare global {
     interface FormData {
@@ -6,35 +14,46 @@ declare global {
     }
 }
 FormData.prototype.getHeaders = () => {
-    return { 'Content-Type': 'multipart/form-data' };
+    return { "Content-Type": "multipart/form-data" };
 };
 export class ImageGenerator {
-    private _plugins: { [key in SupportedEngines]?: IImageGeneratorPlugin } = {};
-    public disableAutoDownload: boolean = false;
-    public transparentMode: boolean = true;
+    private _plugins: { [key in SupportedEngines]?: IImageGeneratorPlugin } =
+        {};
+    public disableAutoDownload = false;
+    public transparentMode = true;
     /**
-     * 
+     *
      * @param _injectedMethods injected methods, either from web or node environment
      */
-    constructor(private _injectedMethods: IInjectedMethods) {
-    }
+    constructor(private _injectedMethods: IInjectedMethods) {}
 
     public addPlugin(plugin: IImageGeneratorPlugin) {
         this._plugins[plugin.name] = plugin;
         plugin.injectMethods(this._injectedMethods);
-
-    };
+    }
 
     public removePlugin(engine: SupportedEngines) {
         delete this._plugins[engine];
     }
-    async textToImage(prompt: string, options: IImageGeneratorTextToImageOptions, engine?: SupportedEngines): Promise<IImageGeneratorResponse> {
+    async textToImage(
+        prompt: string,
+        options: IImageGeneratorTextToImageOptions,
+        engine?: SupportedEngines
+    ): Promise<IImageGeneratorResponse> {
         return this.getPlugin(engine).textToImage(prompt, options);
     }
-    async inpainting(prompt: string, options: IImageGeneratorInpaintingOptions, engine?: SupportedEngines): Promise<IImageGeneratorResponse> {
+    async inpainting(
+        prompt: string,
+        options: IImageGeneratorInpaintingOptions,
+        engine?: SupportedEngines
+    ): Promise<IImageGeneratorResponse> {
         return this.getPlugin(engine).inpainting(prompt, options);
     }
-    async imageToImage(prompt: string, options: IImageGeneratorImageToImageOptions, engine?: SupportedEngines): Promise<IImageGeneratorResponse> {
+    async imageToImage(
+        prompt: string,
+        options: IImageGeneratorImageToImageOptions,
+        engine?: SupportedEngines
+    ): Promise<IImageGeneratorResponse> {
         return this.getPlugin(engine).imageToImage(prompt, options);
     }
 
@@ -51,5 +70,4 @@ export class ImageGenerator {
         }
         return plugin;
     }
-
 }

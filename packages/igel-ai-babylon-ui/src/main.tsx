@@ -5,9 +5,9 @@ import App from "./App";
 import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <FluentProvider theme={teamsLightTheme}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </FluentProvider>
+    <FluentProvider theme={teamsLightTheme}>
+        <React.StrictMode>
+            <App />
+        </React.StrictMode>
+    </FluentProvider>
 );

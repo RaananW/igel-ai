@@ -5,19 +5,28 @@
 export interface IImageGeneratorPlugin {
     readonly name: SupportedEngines;
     injectMethods(methods: IInjectedMethods): void;
-    textToImage(prompt: string, options?: IImageGeneratorTextToImageOptions): Promise<IImageGeneratorResponse>;
-    inpainting(prompt: string, options: IImageGeneratorInpaintingOptions): Promise<IImageGeneratorResponse>;
-    imageToImage(prompt?: string, options?: IImageGeneratorImageToImageOptions): Promise<IImageGeneratorResponse>;
+    textToImage(
+        prompt: string,
+        options?: IImageGeneratorTextToImageOptions
+    ): Promise<IImageGeneratorResponse>;
+    inpainting(
+        prompt: string,
+        options: IImageGeneratorInpaintingOptions
+    ): Promise<IImageGeneratorResponse>;
+    imageToImage(
+        prompt?: string,
+        options?: IImageGeneratorImageToImageOptions
+    ): Promise<IImageGeneratorResponse>;
     serialize(): { [key: string]: any };
 }
 
 /**
- * A fixed list of APIs supported. 
+ * A fixed list of APIs supported.
  * When adding a new plugin make sure you add them here.
  */
 export enum SupportedEngines {
     OPENNI = "OpenNI",
-    STABLEDIFFUSION = "StableDiffusion"
+    STABLEDIFFUSION = "StableDiffusion",
 }
 
 /**
@@ -28,7 +37,7 @@ export enum SupportedEngines {
 export interface IImageGeneratorTextToImageOptions {
     width?: number;
     height?: number;
-    responseType?: 'base64' | 'buffer';
+    responseType?: "base64" | "buffer";
     resultsLength?: number;
     requestIdentifier?: string;
     negativePrompt?: string;
@@ -37,7 +46,8 @@ export interface IImageGeneratorTextToImageOptions {
 /**
  * The options requires to generate image-to-image (image variations)
  */
-export interface IImageGeneratorImageToImageOptions extends IImageGeneratorTextToImageOptions {
+export interface IImageGeneratorImageToImageOptions
+    extends IImageGeneratorTextToImageOptions {
     /**
      * Either a URL of an image or an array buffer of a loaded image.
      * Some APIs do not support ArrayBuffer. If an ArrayBuffer is provided it should throw.
@@ -48,7 +58,8 @@ export interface IImageGeneratorImageToImageOptions extends IImageGeneratorTextT
 /**
  * The options requires to generate inpainting (image editing)
  */
-export interface IImageGeneratorInpaintingOptions extends IImageGeneratorImageToImageOptions {
+export interface IImageGeneratorInpaintingOptions
+    extends IImageGeneratorImageToImageOptions {
     /**
      * An optional edit mask (an image containing transparent parts that will be used during the editing process)
      * If not provided the image will be used. Image is then expected to have an alpha channel.

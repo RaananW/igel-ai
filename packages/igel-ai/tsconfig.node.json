@@ -1,12 +1,5 @@
 {
-  "compilerOptions": {
-    "composite": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "lib": ["ESNext"],
-  },
-  "include": ["src/node.ts"]
+    "extends": "../../tsconfig.json",
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
 }
