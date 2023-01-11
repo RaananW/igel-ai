@@ -24,6 +24,7 @@ export interface IImageProps {
     keepInResults?: boolean;
     forceMenu?: boolean;
     tooltip?: string;
+    keyToUse?: string;
 }
 export function SingleImage({
     image,
@@ -35,11 +36,12 @@ export function SingleImage({
     keepInResults,
     forceMenu,
     tooltip,
+    keyToUse
 }: IImageProps) {
     const { generatedImages, setSelectedImage, updateGeneratedImages } =
         useContext(ImageGeneratorContext);
     return (
-        <div className={classes.imageContainer}>
+        <div key={keyToUse} className={classes.imageContainer}>
             {label && <Label size="large">{label}</Label>}
             {loading && <Spinner size="huge" label="Loading..." />}
             {image && !loading && (

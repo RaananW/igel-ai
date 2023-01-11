@@ -1,4 +1,15 @@
-import { Button, Input, Label, Spinner } from "@fluentui/react-components";
+import {
+    Button,
+    Input,
+    Label,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
+    MenuPopover,
+    MenuTrigger,
+    Spinner,
+} from "@fluentui/react-components";
 import { Select } from "@fluentui/react-components/unstable";
 import { IImageGeneratorResponse, SupportedEngines } from "igel-ai";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -26,7 +37,7 @@ export function Main() {
     const [loading, setLoading] = useState<boolean>(false);
     const [seamlessProcess, setSeamlessProcess] = useState<boolean>(false);
     const [engine, setEngine] = useState<SupportedEngines>();
-    const [maskSize, setMaskSize] = useState<number>(0.12);
+    const [maskSize /*, setMaskSize*/] = useState<number>(0.08);
 
     const {
         generatedImages,
@@ -80,25 +91,24 @@ export function Main() {
         open: openMaskUrl,
     } = useDropzone({ onDrop: onDropMaskUrl, noClick: true });
 
-    const text2image = () => {
+    const text2image = async () => {
         setLoading(true);
-        imageGenerator
-            .textToImage(
-                prompt,
-                {
-                    negativePrompt: negativePrompt,
-                    responseType: "base64",
-                },
-                engine
-            )
-            .then(setResultUrlFromReturnValue)
-            .then(() => setLoading(false))
-            .catch(onError);
+        const res = await imageGenerator.textToImage(
+            prompt,
+            {
+                negativePrompt: negativePrompt,
+                responseType: "base64",
+            },
+            engine
+        );
+        const returnValue = setResultUrlFromReturnValue(res);
+        setLoading(false);
+        return returnValue;
     };
 
     const imageVariation = () => {
         setLoading(true);
-        imageGenerator
+        return imageGenerator
             .imageToImage(
                 "",
                 {
@@ -113,39 +123,56 @@ export function Main() {
             .catch(onError);
     };
 
-    const inpainting = () => {
+    const inpainting = async (imageData = imageUrl, maskData = maskUrl) => {
         setLoading(true);
-        imageGenerator
-            .inpainting(
-                prompt,
-                {
-                    negativePrompt: negativePrompt,
-                    image: imageUrl,
-                    mask: maskUrl || imageUrl,
-                    responseType: "base64",
-                },
-                engine
-            )
-            .then(setResultUrlFromReturnValue)
-            .then(() => setLoading(false))
-            .catch(onError);
+        const image = await imageGenerator.inpainting(
+            prompt,
+            {
+                negativePrompt: negativePrompt,
+                image: imageData,
+                mask: maskData || imageData,
+                responseType: "base64",
+            },
+            engine
+        );
+        const correctImage = setResultUrlFromReturnValue(image);
+        setLoading(false);
+        return correctImage;
     };
 
-    const processForSeamless = () => {
+    const generateSeamless = async () => {
+        setLoading(true);
+        // run text2image first
+        const image = await text2image();
+        // then run the seamless process
+        const processed = await processForSeamless(image);
+        if (!processed) {
+            setLoading(false);
+            return;
+        }
+        // then run inpainting
+        await inpainting(await processed[1], await processed[0]);
+        setLoading(false);
+    };
+
+    const processForSeamless = (otherInput?: string) => {
         setSeamlessProcess(true);
-        cropToSquare(imageUrl)
+        return cropToSquare(otherInput || imageUrl)
             .then((cropped) => {
                 return [
                     generateCrossMask(cropped, maskSize).then((cross) => {
                         setMaskUrl(cross);
+                        return cross;
                     }),
                     prepareImageForSeamlessTexture(cropped).then((newUrl) => {
                         setImageUrl(newUrl);
+                        return newUrl;
                     }),
                 ];
             })
-            .then(() => {
+            .then((data) => {
                 setSeamlessProcess(false);
+                return data;
             }, onError);
     };
 
@@ -162,6 +189,7 @@ export function Main() {
         }
         setResultUrl(firstImage);
         updateGeneratedImages([...generatedImages, firstImage]);
+        return firstImage;
     };
 
     useEffect(() => {
@@ -248,21 +276,50 @@ export function Main() {
                         disabled={!value.enabledEngines.length}
                     />
                     <div className={classes.buttonsContainer}>
-                        <Button disabled={!prompt} onClick={text2image}>
-                            Text2Image
-                        </Button>
-                        <Button
-                            disabled={!prompt || !imageUrl}
-                            onClick={imageVariation}
-                        >
-                            Image Variation
-                        </Button>
-                        <Button
-                            disabled={!prompt || !imageUrl}
-                            onClick={inpainting}
-                        >
-                            Inpainting
-                        </Button>
+                        <Menu>
+                            <MenuTrigger disableButtonEnhancement>
+                                <MenuButton appearance="primary">
+                                    Generate
+                                </MenuButton>
+                            </MenuTrigger>
+
+                            <MenuPopover>
+                                <MenuList>
+                                    <MenuItem
+                                        disabled={!prompt}
+                                        onClick={() => {
+                                            text2image().catch(onError);
+                                        }}
+                                    >
+                                        Text 2 image
+                                    </MenuItem>
+                                    <MenuItem
+                                        disabled={!prompt || !imageUrl}
+                                        onClick={() => {
+                                            imageVariation().catch(onError);
+                                        }}
+                                    >
+                                        Variation
+                                    </MenuItem>
+                                    <MenuItem
+                                        disabled={!prompt || !imageUrl}
+                                        onClick={() => {
+                                            inpainting().catch(onError);
+                                        }}
+                                    >
+                                        Inpainting
+                                    </MenuItem>
+                                    <MenuItem
+                                        disabled={!prompt}
+                                        onClick={() => {
+                                            generateSeamless().catch(onError);
+                                        }}
+                                    >
+                                        Seamless texture
+                                    </MenuItem>
+                                </MenuList>
+                            </MenuPopover>
+                        </Menu>
                     </div>
                     <div className={classes.buttonsContainer}>
                         <div
@@ -291,7 +348,9 @@ export function Main() {
                                     },
                                     {
                                         label: "Prepare for seamless",
-                                        onClick: processForSeamless,
+                                        onClick: () => {
+                                            processForSeamless().catch(onError);
+                                        },
                                     },
                                     {
                                         label: "Crop to square",
@@ -346,8 +405,8 @@ export function Main() {
                                             reverseMaskImage(maskUrl)
                                                 .then(setMaskUrl)
                                                 .catch(onError);
-                                        }
-                                    }
+                                        },
+                                    },
                                     // {
                                     //     label: "Increase mask size",
                                     //     onClick: () => {
@@ -369,7 +428,7 @@ export function Main() {
                     >
                         <Label size="large">Result</Label>
                         <SingleImage
-                        tooltip="Result menu"
+                            tooltip="Result menu"
                             image={resultUrl}
                             loading={loading}
                             keepInResults={true}

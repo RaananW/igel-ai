@@ -8,7 +8,7 @@ export function ImageList() {
     return (
         <div className={classes.imageList}>
             {generatedImages.map((image, index) => (
-                <SingleImage image={image} key={index}></SingleImage>
+                <SingleImage image={image} key={index} keyToUse={`${index}`}></SingleImage>
             ))}
         </div>
     );

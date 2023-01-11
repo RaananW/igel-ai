@@ -1,6 +1,6 @@
 .grid-container {
     display: grid;
-    grid-template-columns: 20% 1fr 20%;
+    grid-template-columns: fit-content(15%) 1fr fit-content(15%);
     height: 100%;
 }
 
