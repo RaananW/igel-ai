@@ -13,8 +13,7 @@
     "author": "Raanan Weber",
     "license": "Apache-2.0",
     "dependencies": {
-        "openai": "^3.1.0",
-        "deepai": "^1.0.21"
+        "openai": "^3.1.0"
     },
     "devDependencies": {
         "@rollup/plugin-typescript": "^10.0.1",

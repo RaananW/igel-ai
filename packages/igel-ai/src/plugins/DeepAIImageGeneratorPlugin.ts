@@ -8,18 +8,14 @@ import {
     IInjectedMethods,
     SupportedEngines,
 } from "../interfaces";
-import {
-    IStableDiffusionImageRequest,
-    IStableDiffusionRequestBody,
-    IStableDiffusionResponse,
-} from "./StableDiffussionApiInterfaces";
+import { IDeepAIImageRequest, IDeepAIRequestBody, IDeepAIResponse } from "./DeepAIApiInterfaces";
 
 export class DeepAIImageGeneratorPlugin
     implements IImageGeneratorPlugin
 {
     public readonly name = SupportedEngines.DEEPAI;
 
-    public constructor(private readonly _apiKey: string) {}
+    public constructor(private readonly _apiKey: string) { }
 
     public injectMethods(_methods: IInjectedMethods): void {
         // Not used for Stable Diffusion API
@@ -35,57 +31,24 @@ export class DeepAIImageGeneratorPlugin
         );
 
         // will throw an error if the request is invalid
-        const response = await axios.request<IStableDiffusionResponse>(
+        const response = await axios.request<IDeepAIResponse>(
             createImageRequest
         );
         return this.responseToReturnFormat(response);
     }
 
-    public async imageToImage(
+    public imageToImage(
         prompt: string,
         options: IImageGeneratorImageToImageOptions
     ): Promise<IImageGeneratorResponse> {
-        if (
-            !options.image ||
-            !DeepAIImageGeneratorPlugin.isString(options.image)
-        ) {
-            throw new Error(
-                "Image URL is required for image to image generation"
-            );
-        }
-
-        const createImageRequest = this.generateImageToImageRequest(
-            prompt,
-            options
-        );
-
-        // will throw an error if the request is invalid
-        const response = await axios.request<IStableDiffusionResponse>(
-            createImageRequest
-        );
-        return this.responseToReturnFormat(response);
+        throw new Error("Not implemented");
     }
 
-    public async inpainting(
+    public inpainting(
         prompt: string,
         options: IImageGeneratorInpaintingOptions
     ): Promise<IImageGeneratorResponse> {
-        if (
-            !options.mask ||
-            !DeepAIImageGeneratorPlugin.isString(options.mask)
-        ) {
-            throw new Error(
-                "Image URL is required for image to image generation"
-            );
-        }
-
-        const createImageRequest = this.generateInpaintRequest(prompt, options);
-
-        // will throw an error if the request is invalid
-        const response = await axios.request<IStableDiffusionResponse>(
-            createImageRequest
-        );
-        return this.responseToReturnFormat(response);
+        throw new Error("Not implemented");
     }
 
     public serialize(): { [key: string]: any } {
@@ -97,43 +60,17 @@ export class DeepAIImageGeneratorPlugin
     private generateTextToImageRequest(
         prompt: string,
         options: IImageGeneratorTextToImageOptions
-    ): AxiosRequestConfig<IStableDiffusionRequestBody> {
+    ): AxiosRequestConfig<IDeepAIRequestBody> {
         return this.generateImageRequest({
+            url: "https://api.deepai.org/api/text2img",
             prompt,
-            url: "https://stablediffusionapi.com/api/v3/text2img",
             ...options,
         });
     }
 
-    private generateImageToImageRequest(
-        prompt: string,
-        options: IImageGeneratorImageToImageOptions
-    ): AxiosRequestConfig<IStableDiffusionRequestBody> {
-        const { image, ...optionsWithoutImage } = options;
-        return this.generateImageRequest({
-            prompt,
-            url: "https://stablediffusionapi.com/api/v3/img2img",
-            image: image as any as string,
-            ...optionsWithoutImage,
-        });
-    }
-
-    private generateInpaintRequest(
-        prompt: string,
-        options: IImageGeneratorInpaintingOptions
-    ): AxiosRequestConfig<IStableDiffusionRequestBody> {
-        const { image: _image, mask, ...optionsWithoutMask } = options;
-        return this.generateImageRequest({
-            prompt,
-            url: "https://stablediffusionapi.com/api/v3/inpaint",
-            mask: mask as unknown as string,
-            ...optionsWithoutMask,
-        });
-    }
-
     private generateImageRequest(
-        options: IStableDiffusionImageRequest
-    ): AxiosRequestConfig<IStableDiffusionRequestBody> {
+        options: IDeepAIImageRequest
+    ): AxiosRequestConfig<IDeepAIRequestBody> {
         if (options.width || options.height) {
             if (
                 options.width &&
@@ -145,13 +82,9 @@ export class DeepAIImageGeneratorPlugin
                 );
                 options.height = options.width;
             }
-            if (
-                options.width !== 1024 &&
-                options.width !== 512 &&
-                options.width !== 256
-            ) {
+            if (!options.width || options.width % 128 !== 0) {
                 console.log(
-                    "Width should be 1024, 512 or 256. Using default value."
+                    "Width should be a multiple of 128 between 128 and 1536. Using default value (1024)."
                 );
                 options.width = 1024;
             }
@@ -161,37 +94,23 @@ export class DeepAIImageGeneratorPlugin
             method: "POST",
             url: options.url,
             data: {
-                key: this._apiKey,
-                prompt: options.prompt,
-                negative_prompt: options.negativePrompt ?? "",
-                init_image: (options.image as string) ?? null,
-                mask_image: (options.mask as string) ?? null,
-                samples: options.resultsLength ?? 1,
-                width: options.width ?? 1024,
-                height: options.height ?? 1024,
-                prompt_strength: 1,
-                num_inference_steps: 20,
-                guidance_scale: 7.5,
+                text: options.prompt,
+                grid_size: "1",
+                width: options?.width?.toString() ?? "1024",
+                height: options?.height?.toString() ?? "1024",
                 seed: null, // random seed
-                webhook: null,
-                track_id: options.requestIdentifier ?? null,
             },
             headers: {
-                "Content-Type": "application/json",
+                "api-key": this._apiKey,
             },
         };
     }
 
     private responseToReturnFormat(
-        response: AxiosResponse<IStableDiffusionResponse, any>
+        response: AxiosResponse<IDeepAIResponse, any>
     ): IImageGeneratorResponse {
         return {
-            images: response.data.output,
-            metadata: response.data.meta,
+            images: response.data.output
         };
-    }
-
-    private static isString(obj: unknown): obj is string {
-        return typeof obj === "string";
     }
 }
