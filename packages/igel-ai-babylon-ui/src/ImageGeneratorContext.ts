@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction, useState } from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 import { ImageGenerator, Parse } from "igel-ai";
 import { SupportedEngines } from "igel-ai";
 import { loadFile, saveFile, imageToFileObject } from "igel-ai/dist/web";

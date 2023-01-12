@@ -2,8 +2,10 @@
     "name": "igel-ai-cli",
     "version": "1.0.0",
     "description": "Igel CLI",
-    "main": "dist/cli.js",
-    "bin": "./dist/cli.js",
+    "main": "./dist/cliInterface.mjs",
+    "bin": {
+        "igel": "./dist/cliInterface.mjs"
+    },
     "files": [
         "./dist/**/*"
     ],

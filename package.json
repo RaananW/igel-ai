@@ -8,7 +8,7 @@
         "packages/*"
     ],
     "scripts": {
-        "build": "npm run build -w igel-ai && npm run build -w igel-ai-babylon-ui",
+        "build": "npm run build -w igel-ai && npm run build -w igel-ai-babylon-ui && npm run build -w igel-ai-cli",
         "postinstall": "npm run build",
         "lint": "eslint --ext .ts,.tsx .",
         "lint:fix": "eslint --ext .ts,.tsx . --fix",

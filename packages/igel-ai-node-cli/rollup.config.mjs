@@ -2,9 +2,9 @@ import typescript from "@rollup/plugin-typescript";
 
 export default [
     {
-        input: "src/cli.ts",
+        input: "src/cliInterface.ts",
         output: {
-            file: "dist/cli.mjs",
+            file: "dist/cliInterface.mjs",
             format: "esm",
             sourcemap: true,
         },

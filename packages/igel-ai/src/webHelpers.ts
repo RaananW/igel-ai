@@ -7,10 +7,10 @@ export function saveFile(url: string, filename = "image.png") {
 
 export async function loadFile(
     url: string,
-    base64?: boolean
-): Promise<string | ArrayBuffer> {
+    _base64?: boolean
+): Promise<string> {
     const response = await fetch(url);
-    if (base64) {
+    // if (base64) {
         const blob = await response.blob();
         return await new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -18,8 +18,8 @@ export async function loadFile(
             reader.onerror = reject;
             reader.readAsDataURL(blob);
         });
-    }
-    return await response.arrayBuffer();
+    // }
+    // return await response.arrayBuffer();
 }
 
 export async function imageToFileObject(
