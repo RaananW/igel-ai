@@ -141,7 +141,7 @@ void yargs(hideBin(process.argv))
             })
     }, (argv) => {
         const engine = getEngine(argv.engine as string);
-        const apiKey = "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" || process.env[`${engine}_key`] || argv.key as string;
+        const apiKey = process.env[`${engine}_key`] || argv.key as string;
         const generator = new ImageGenerator(
             {
                 loadFile,
