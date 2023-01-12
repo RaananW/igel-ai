@@ -53,7 +53,7 @@ export interface IImageGeneratorImageToImageOptions
      * Either a URL of an image or an array buffer of a loaded image.
      * Some APIs do not support ArrayBuffer. If an ArrayBuffer is provided it should throw.
      */
-    image: string | ArrayBuffer;
+    image: string;
 }
 
 /**
@@ -65,7 +65,7 @@ export interface IImageGeneratorInpaintingOptions
      * An optional edit mask (an image containing transparent parts that will be used during the editing process)
      * If not provided the image will be used. Image is then expected to have an alpha channel.
      */
-    mask?: string | ArrayBuffer;
+    mask?: string;
 }
 
 /**
@@ -102,7 +102,7 @@ export interface IInjectedMethods {
      * @param base64 Should the result be basee64? when false it will be an array buffer
      * @returns Either the data URL or the array buffer
      */
-    loadFile?: (url: string, base64?: boolean) => Promise<string | ArrayBuffer>;
+    loadFile?: (url: string, base64?: boolean) => Promise<string>;
     /**
      * Generate a File object from image data.
      * The reason that the File object is being used is because most APIs accept the File Object.
@@ -111,5 +111,5 @@ export interface IInjectedMethods {
      * @param image The image data. Either a data URL or an array buffer
      * @returns A promise that resolves with a File Object
      */
-    imageToFileObject?: (image: string | ArrayBuffer) => Promise<File>;
+    imageToFileObject?: (image: string) => Promise<File>;
 }

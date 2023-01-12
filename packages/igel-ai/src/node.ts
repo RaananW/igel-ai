@@ -4,9 +4,7 @@ There is a slight issue with typings when using openAI, so this is will stay com
 */
 
 import * as fs from "fs";
-import * as http from "http";
 import axios from 'axios';
-import { Readable } from "stream";
 
 export function saveFile(_url: string, _filename = "./image.png") {
     // // check if the URL is a base64 url
@@ -35,17 +33,24 @@ export function saveFile(_url: string, _filename = "./image.png") {
 
 export async function loadFile(
     url: string,
-    base64?: boolean
-): Promise<string | ArrayBuffer> {
+    _base64?: boolean
+): Promise<string> {
     const image = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' });
-    if (base64) {
-        return Buffer.from(image.data).toString('base64');
-    } else {
-        return image.data;
-    }
+    // if (base64) {
+    return Buffer.from(image.data).toString('base64');
+    // } else {
+    //     return image.data;
+    // }
     // throw new Error("Not implemented");
 }
 
-export function imageToFileObject(image: string | ArrayBuffer): Promise<any> {
-    return Promise.resolve(Readable.from(typeof image === "string" ? Buffer.from(image, 'base64') : Buffer.from(image)));
+export function imageToFileObject(image: string): Promise<any> {
+    // save the file to a temp filename. Temp solution until I find another solution
+    const filename = `./.temp${Math.round(Math.random() * 1000)}.png`;
+    fs.writeFileSync(filename, image.split("base64,")[1], "base64");
+    const readStream = fs.createReadStream(filename);
+    readStream.on('close', () => {
+        fs.rmSync(filename);
+    })
+    return Promise.resolve(readStream);
 }

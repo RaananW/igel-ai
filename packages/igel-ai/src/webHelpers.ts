@@ -23,7 +23,7 @@ export async function loadFile(
 }
 
 export async function imageToFileObject(
-    image: string | ArrayBuffer
+    image: string
 ): Promise<File> {
     const input =
         typeof image === "string" ? image : await arrayBufferToBase64(image);
