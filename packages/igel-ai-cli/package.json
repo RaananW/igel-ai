@@ -2,12 +2,12 @@
     "name": "igel-ai-cli",
     "version": "1.0.0",
     "description": "Igel CLI",
-    "main": "./dist/cliInterface.mjs",
+    "main": "./bin/cli.mjs",
     "bin": {
-        "igel": "node ./dist/cliInterface.mjs"
+        "igel": "./bin/cli.mjs"
     },
     "files": [
-        "./dist/**/*"
+        "./bin/**/*"
     ],
     "scripts": {
         "build": "rollup -c",
@@ -16,6 +16,7 @@
     "author": "Raanan Weber",
     "license": "Apache-2.0",
     "devDependencies": {
+        "@guanghechen/rollup-plugin-copy": "^3.0.0",
         "@rollup/plugin-typescript": "^10.0.1",
         "@types/node": "^18.11.18",
         "@types/yargs": "^17.0.19",
