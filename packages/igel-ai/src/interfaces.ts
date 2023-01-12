@@ -27,6 +27,7 @@ export interface IImageGeneratorPlugin {
 export enum SupportedEngines {
     OPENNI = "OpenNI",
     STABLEDIFFUSION = "StableDiffusion",
+    DEEPAI = "DeepAI",
 }
 
 /**

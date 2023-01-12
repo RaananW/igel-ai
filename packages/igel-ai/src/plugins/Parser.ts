@@ -13,5 +13,11 @@ export async function Parse(
             return new (
                 await import("./StableDiffusionImageGeneratorPlugin")
             ).StableDiffusionImageGeneratorPlugin(payload.apiKey as string);
+        case SupportedEngines.DEEPAI:
+            return new (
+                await import("./DeepAIImageGeneratorPlugin")
+            ).DeepAIImageGeneratorPlugin(payload.apiKey as string);
+        default:
+            throw new Error("Invalid engine");
     }
 }

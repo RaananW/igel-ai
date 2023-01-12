@@ -72,6 +72,12 @@ export function Engines() {
                                                     apiKey
                                                 );
                                             break;
+                                        // case SupportedEngines.DEEPAI:
+                                        //     newEngine =
+                                        //         new DeepAIImageGeneratorPlugin(
+                                        //             apiKey
+                                        //         );
+                                            break;
                                         default:
                                             newEngine =
                                                 new OpenAIImageGeneratorPlugin(
