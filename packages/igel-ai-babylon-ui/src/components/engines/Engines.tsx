@@ -17,6 +17,7 @@ import { Select } from "@fluentui/react-components/unstable";
 import {
     OpenAIImageGeneratorPlugin,
     StableDiffusionImageGeneratorPlugin,
+    DeepAIImageGeneratorPlugin,
     SupportedEngines,
     IImageGeneratorPlugin,
 } from "igel-ai";
@@ -72,11 +73,11 @@ export function Engines() {
                                                     apiKey
                                                 );
                                             break;
-                                        // case SupportedEngines.DEEPAI:
-                                        //     newEngine =
-                                        //         new DeepAIImageGeneratorPlugin(
-                                        //             apiKey
-                                        //         );
+                                        case SupportedEngines.DEEPAI:
+                                             newEngine =
+                                                 new DeepAIImageGeneratorPlugin(
+                                                     apiKey
+                                                 );
                                             break;
                                         default:
                                             newEngine =
