@@ -6,7 +6,7 @@ import {
     loadFile,
     saveFile,
     imageToFileObject,
-} from "igel-ai/dist/node.js";
+} from "igel-ai/dist/nodejs.js";
 import * as fs from "fs";
 import * as path from "path";
 

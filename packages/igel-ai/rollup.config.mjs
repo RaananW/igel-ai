@@ -11,9 +11,9 @@ export default [
         plugins: [typescript({ sourceMap: true, inlineSources: true })],
     },
     {
-      input: "src/node.ts",
+      input: "src/nodejs.ts",
       output: {
-        file: "dist/node.js",
+        file: "dist/nodejs.js",
         format: "esm",
             sourcemap: true,
         },
