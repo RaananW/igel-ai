@@ -1,8 +1,9 @@
 {
-    "name": "igel-ai",
+    "name": "igel-ai-cli",
     "version": "1.0.0",
-    "description": "Image Generation Ebstract Layer. Or abstract! :-)",
-    "main": "dist/core.js",
+    "description": "Igel CLI",
+    "main": "dist/cli.js",
+    "bin": "./dist/cli.js",
     "files": [
         "./dist/**/*"
     ],
@@ -16,7 +17,6 @@
         "openai": "^3.1.0"
     },
     "devDependencies": {
-        "@types/deepai": "^1.0.0",
         "@rollup/plugin-typescript": "^10.0.1",
         "@types/node": "^18.11.18",
         "rollup": "^3.9.1",

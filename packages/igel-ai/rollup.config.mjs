@@ -10,15 +10,15 @@ export default [
         },
         plugins: [typescript({ sourceMap: true, inlineSources: true })],
     },
-    // {
-    //   input: "src/node.ts",
-    //   output: {
-    //     file: "dist/node.js",
-    //     format: "esm",
-    //     sourcemap: true,
-    //   },
-    //   plugins: [typescript()],
-    // },
+    {
+      input: "src/node.ts",
+      output: {
+        file: "dist/node.js",
+        format: "esm",
+            sourcemap: true,
+        },
+        plugins: [typescript({ sourceMap: true, inlineSources: true })],
+    },
     {
         input: "src/web.ts",
         output: {
