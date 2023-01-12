@@ -4,7 +4,7 @@
     "description": "Igel CLI",
     "main": "./dist/cliInterface.mjs",
     "bin": {
-        "igel": "./dist/cliInterface.mjs"
+        "igel": "node ./dist/cliInterface.mjs"
     },
     "files": [
         "./dist/**/*"
@@ -15,9 +15,6 @@
     },
     "author": "Raanan Weber",
     "license": "Apache-2.0",
-    "dependencies": {
-        "openai": "^3.1.0"
-    },
     "devDependencies": {
         "@rollup/plugin-typescript": "^10.0.1",
         "@types/node": "^18.11.18",
