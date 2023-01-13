@@ -152,9 +152,9 @@ export class StableDiffusionImageGeneratorPlugin
                 options.width !== 256
             ) {
                 console.log(
-                    "Width should be 1024, 512 or 256. Using default value."
+                    "Width should be 1024, 512 or 256. Using default value (512)."
                 );
-                options.width = 1024;
+                options.width = 512;
             }
         }
 
@@ -168,8 +168,8 @@ export class StableDiffusionImageGeneratorPlugin
                 init_image: (options.image as string) ?? null,
                 mask_image: (options.mask as string) ?? null,
                 samples: options.resultsLength ?? 1,
-                width: options.width ?? 1024,
-                height: options.height ?? 1024,
+                width: options.width ?? 512,
+                height: options.height ?? 512,
                 strength: 0.7,
                 num_inference_steps: 20,
                 guidance_scale: 7.5,
