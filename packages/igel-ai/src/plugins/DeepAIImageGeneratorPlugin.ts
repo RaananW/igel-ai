@@ -18,7 +18,7 @@ export class DeepAIImageGeneratorPlugin
     public constructor(private readonly _apiKey: string) { }
 
     public injectMethods(_methods: IInjectedMethods): void {
-        // Not used for Stable Diffusion API
+        // Not used for DeepAI API
     }
 
     public async textToImage(

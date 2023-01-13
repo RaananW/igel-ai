@@ -1,7 +1,7 @@
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { ImageGenerator, OpenAIImageGeneratorPlugin, StableDiffusionImageGeneratorPlugin, SupportedEngines } from "igel-ai";
+import { ImageGenerator, OpenAIImageGeneratorPlugin, StableDiffusionImageGeneratorPlugin, DeepAIImageGeneratorPlugin, SupportedEngines } from "igel-ai";
 import {
     loadFile,
     saveFile,
@@ -16,8 +16,8 @@ function getEngine(engine: string): SupportedEngines {
     switch (engine.toLowerCase()) {
         case SupportedEngines.STABLEDIFFUSION.toLowerCase():
             return SupportedEngines.STABLEDIFFUSION;
-        // case SupportedEngines.DEEPAI.toLowerCase():
-        //     return SupportedEngines.DEEPAI;
+        case SupportedEngines.DEEPAI.toLowerCase():
+            return SupportedEngines.DEEPAI;
         case SupportedEngines.OPENNI.toLowerCase():
         default:
             return SupportedEngines.OPENNI;
@@ -29,9 +29,9 @@ function addPlugin(engine: SupportedEngines, generator: ImageGenerator, apiKey: 
         case SupportedEngines.STABLEDIFFUSION:
             generator.addPlugin(new StableDiffusionImageGeneratorPlugin(apiKey));
             break;
-        // case SupportedEngines.DEEPAI:
-        //     generator.addPlugin(new DeepAIImageGeneratorPlugin());
-        //     break;
+        case SupportedEngines.DEEPAI:
+            generator.addPlugin(new DeepAIImageGeneratorPlugin(apiKey));
+            break;
         case SupportedEngines.OPENNI:
         default:
             generator.addPlugin(new OpenAIImageGeneratorPlugin(apiKey));
@@ -95,8 +95,13 @@ void yargs(hideBin(process.argv))
                 }
             });
         })
-    .command('image-variation <imagePath>', 'Generate an image variation', (yargs) => {
+    .command('image-variation <prompt> <imagePath>', 'Generate an image variation', (yargs) => {
         return yargs
+            .positional('prompt', {
+                describe: 'The prompt to use',
+                type: 'string',
+                default: 'A 3D scene of a panda on a lion in a forest',
+            })
             .positional('imagePath', {
                 description: 'Local path or URL of the input image',
                 type: 'string',
@@ -112,7 +117,8 @@ void yargs(hideBin(process.argv))
             }
         )
         addPlugin(engine, generator, apiKey);
-        generator.imageToImage(argv.prompt || "", {
+        const prompt = typeof argv.prompt === "string" ? argv.prompt : (argv.prompt as string[]).join(" ");
+        generator.imageToImage(prompt, {
             image: processImagePath(argv.imagePath as string),
             resultsLength: argv.count as number
         }, engine).then((image) => {
