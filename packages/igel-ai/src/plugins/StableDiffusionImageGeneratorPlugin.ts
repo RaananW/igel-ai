@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { create } from "domain";
 import {
     IImageGeneratorImageToImageOptions,
     IImageGeneratorInpaintingOptions,
@@ -169,7 +170,7 @@ export class StableDiffusionImageGeneratorPlugin
                 samples: options.resultsLength ?? 1,
                 width: options.width ?? 1024,
                 height: options.height ?? 1024,
-                prompt_strength: 1,
+                strength: 0.7,
                 num_inference_steps: 20,
                 guidance_scale: 7.5,
                 seed: null, // random seed

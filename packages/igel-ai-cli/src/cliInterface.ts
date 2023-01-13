@@ -118,7 +118,7 @@ void yargs(hideBin(process.argv))
         )
         addPlugin(engine, generator, apiKey);
         const prompt = typeof argv.prompt === "string" ? argv.prompt : (argv.prompt as string[]).join(" ");
-        generator.imageToImage(prompt || "", {
+        generator.imageToImage(prompt, {
             image: processImagePath(argv.imagePath as string),
             resultsLength: argv.count as number
         }, engine).then((image) => {
